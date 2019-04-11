@@ -67,7 +67,7 @@ class Teamwork extends q.DesktopApp {
 
     // Check if the user add a specific configuration
     // In others words, check if every checkbox are false
-    if(!(this.config["posts"]||this.config["tasks"]||this.config["milestones"])){
+    if(!(this.config["posts"]||this.config["tasks"]||this.config["milestones"]||this.config["comments"])){
 
       // Default configuration.
       // Send message whenever all projects get an update
@@ -290,6 +290,62 @@ class Teamwork extends q.DesktopApp {
           }
         } catch(error){
           logger.error("It has been an error in MILESTONES config: "+error);
+          return q.Signal.error([
+            'The Teamwork service returned an error. Please check your API key and account.',
+            `Detail: ${error.message}`
+          ]);
+        };
+      }
+
+
+      if(this.config["comments"]){
+
+        logger.info("Wanted comments configuration");
+
+        try{
+          body = await request.get({
+            url: `${this.baseUrl}/comments.json`,
+            headers: this.serviceHeaders,
+            json: true
+          });
+          // Test if there is something inside the response
+          isBodyEmpty = isEmpty(body.comments) || (body.comments === "[]");
+          if (isBodyEmpty) {
+            logger.info("Response empty when getting all comments.");
+          }
+          else {
+
+            // Extract the comment from the response
+            for (let comment of body.comments) {
+              // If there is an update on a comment.
+              if( comment["last-changed-on"] > this.now ){
+
+                // Update signal's message
+                if( comment["last-changed-on"] == comment.datetime ){
+                  logger.info("Created comment");
+                  // Created comment
+                  message.push(`New comment in ${comment["project-name"]} project.`);
+                }else{
+                  logger.info("Updated comment");
+                  // Updated milestone
+                  message.push(`Update in a comment in ${comment["project-name"]} project.`);
+                }
+
+                // Check if a signal is already set up
+                // in order to change the url
+                if(triggered){
+                  url = `https://${this.subdomain}.teamwork.com/#/projects/list/active`;
+                }else{
+                  url = `https://${this.subdomain}.teamwork.com/#/${comment["comment-link"]}`;
+                }
+
+                // Need to send a signal
+                triggered = true;
+              }
+            }
+          }
+        } catch(error){
+          logger.error("It has been an error in COMMENTS config: "+error);
           return q.Signal.error([
             'The Teamwork service returned an error. Please check your API key and account.',
             `Detail: ${error.message}`
