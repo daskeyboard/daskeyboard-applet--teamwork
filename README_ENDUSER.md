@@ -1,6 +1,6 @@
 # Teamwork
 
-This applet displays projects updates activity.
+This applet displays all projects updates activity. Moreover, you can trigger by specific kind of updates (posts, comments, notebooks, tasks and milestones.)
 
 Teamwork can provide collective strength and staying power for your business or organization.
 
