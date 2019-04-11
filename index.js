@@ -73,7 +73,7 @@ class Teamwork extends q.DesktopApp {
       // Send message whenever all projects get an update
 
       logger.info("Wanted default configuration. All projects updates.");
-      
+
       try{
         body = await request.get({
           url: `${this.baseUrl}/projects.json`,
@@ -121,7 +121,11 @@ class Teamwork extends q.DesktopApp {
           }
         }
       } catch(error){
-        logger.info("There has been an error:"+error);
+        logger.info("It has been an error in DEFAULT config: "+error);
+        return q.Signal.error([
+          'The Teamwork service returned an error. Please check your API key and account.',
+          `Detail: ${error.message}`
+        ]);
       };
 
     }else{
@@ -175,10 +179,13 @@ class Teamwork extends q.DesktopApp {
             }
           }
         } catch(error){
-          logger.info("There has been an error:"+error);
+          logger.info("It has been an error in POST config: "+error);
+          return q.Signal.error([
+            'The Teamwork service returned an error. Please check your API key and account.',
+            `Detail: ${error.message}`
+          ]);
         };
-
-    }
+      }
 
 
     }
