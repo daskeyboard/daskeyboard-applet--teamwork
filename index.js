@@ -323,11 +323,11 @@ class Teamwork extends q.DesktopApp {
                 if( comment["last-changed-on"] == comment.datetime ){
                   logger.info("Created comment");
                   // Created comment
-                  message.push(`New <b>comment</b> in ${comment["project-name"]} project.`);
+                  message.push(`New comment in ${comment["project-name"]} project.`);
                 }else{
                   logger.info("Updated comment");
                   // Updated milestone
-                  message.push(`Updated <b>comment</b> in ${comment["project-name"]} project.`);
+                  message.push(`Updated comment in ${comment["project-name"]} project.`);
                 }
 
                 // Check if a signal is already set up
