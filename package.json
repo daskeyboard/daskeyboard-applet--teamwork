@@ -84,11 +84,18 @@
         "controlType": "checkbox"
       },
       {
+        "key": "comments",
+        "label": "Comments",
+        "order": 5,
+        "required": false,
+        "controlType": "checkbox"
+      },
+      {
         "key": "color",
         "label": "Select a color",
         "help": "",
         "required": true,
-        "order": 5,
+        "order": 6,
         "controlType": "color",
         "value": "#ff0000"
       },
@@ -97,7 +104,7 @@
         "label": "Select a notification effect",
         "help": "",
         "required": true,
-        "order": 6,
+        "order": 7,
         "controlType": "effect",
         "value": "BLINK"
       }
