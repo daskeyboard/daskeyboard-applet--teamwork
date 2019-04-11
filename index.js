@@ -378,17 +378,6 @@ class Teamwork extends q.DesktopApp {
 
     return signal;
 
-    // try {
-      
-    // }
-    // catch (error) {
-    //   logger.error(`Got error sending request to service: ${JSON.stringify(error)}`);
-    //   return q.Signal.error([
-    //     'The Teamwork service returned an error. Please check your API key and account.',
-    //     `Detail: ${error.message}`
-    //   ]);
-    // }
-
   }
 
 }
