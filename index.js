@@ -67,7 +67,7 @@ class Teamwork extends q.DesktopApp {
 
     // Check if the user add a specific configuration
     // In others words, check if every checkbox are false
-    if(!(this.config["posts"])){
+    if(!(this.config["posts"]||this.config["tasks"])){
 
       // Default configuration.
       // Send message whenever all projects get an update
@@ -157,11 +157,11 @@ class Teamwork extends q.DesktopApp {
                 // Update signal's message
                 if( post["last-changed-on"] == post["created-on"] ){
                   logger.info("Created post");
-                  // Created project
-                  message.push(`New post: ${post.title}.`);
+                  // Created post
+                  message.push(`New post: ${post.title}, in ${post["project-name"]} project.`);
                 }else{
                   logger.info("Updated post");
-                  // Updated project
+                  // Updated post
                   message.push(`Update in ${post.title} post in ${post["project-name"]} project.`);
                 }
 
@@ -180,6 +180,61 @@ class Teamwork extends q.DesktopApp {
           }
         } catch(error){
           logger.info("It has been an error in POST config: "+error);
+          return q.Signal.error([
+            'The Teamwork service returned an error. Please check your API key and account.',
+            `Detail: ${error.message}`
+          ]);
+        };
+      }
+
+      if(this.config["tasks"]){
+
+        logger.info("Wanted tasks configuration");
+
+        try{
+          body = await request.get({
+            url: `${this.baseUrl}/tasks.json`,
+            headers: this.serviceHeaders,
+            json: true
+          });
+          // Test if there is something inside the response
+          isBodyEmpty = isEmpty(body["todo-items"]) || (body["todo-items"] === "[]");
+          if (isBodyEmpty) {
+            logger.info("Response empty when getting all tasks.");
+          }
+          else {
+
+            // Extract the tasks from the response
+            for (let task of body["todo-items"]) {
+              // If there is an update on a task.
+              if( task["last-changed-on"] > this.now ){
+
+                // Update signal's message
+                if( task["last-changed-on"] == task["created-on"] ){
+                  logger.info("Created task");
+                  // Created task
+                  message.push(`New task: ${task.content} in ${task["project-name"]} project.`);
+                }else{
+                  logger.info("Updated task");
+                  // Updated task
+                  message.push(`Update in ${task.content} task in ${task["todo-list-name"]} list, in ${task["project-name"]} project.`);
+                }
+
+                // Check if a signal is already set up
+                // in order to change the url
+                if(triggered){
+                  url = `https://${this.subdomain}.teamwork.com/#/projects/list/active`;
+                }else{
+                  url = `https://${this.subdomain}.teamwork.com/#/tasks/${task.id}`;
+                }
+
+                // Need to send a signal
+                triggered = true;
+              }
+            }
+          }
+        } catch(error){
+          logger.info("It has been an error in TASKS config: "+error);
           return q.Signal.error([
             'The Teamwork service returned an error. Please check your API key and account.',
             `Detail: ${error.message}`
