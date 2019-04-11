@@ -385,7 +385,7 @@ class Teamwork extends q.DesktopApp {
                     message.push(`New notebook: ${notebook.name} in ${project.name} project.`);
                   }else{
                     logger.info("Updated notebook");
-                    // Updated milestone
+                    // Updated notebook
                     message.push(`Update in ${notebook.name} notebook in ${project.name} project.`);
                   }
 
