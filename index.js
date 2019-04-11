@@ -158,11 +158,11 @@ class Teamwork extends q.DesktopApp {
                 if( post["last-changed-on"] == post["created-on"] ){
                   logger.info("Created post");
                   // Created post
-                  message.push(`New post: ${post.title}, in ${post["project-name"]} project.`);
+                  message.push(`New post: <b>${post.title}<b>, in ${post["project-name"]} project.`);
                 }else{
                   logger.info("Updated post");
                   // Updated post
-                  message.push(`Update in ${post.title} post in ${post["project-name"]} project.`);
+                  message.push(`Updated post: <b>${post.title}<b>, in ${post["project-name"]} project.`);
                 }
 
                 // Check if a signal is already set up
@@ -213,11 +213,11 @@ class Teamwork extends q.DesktopApp {
                 if( task["last-changed-on"] == task["created-on"] ){
                   logger.info("Created task");
                   // Created task
-                  message.push(`New task: ${task.content} in ${task["project-name"]} project.`);
+                  message.push(`New task: <b>${task.content}<b>, in ${task["todo-list-name"]} list, in ${task["project-name"]} project.`);
                 }else{
                   logger.info("Updated task");
                   // Updated task
-                  message.push(`Update in ${task.content} task in ${task["todo-list-name"]} list, in ${task["project-name"]} project.`);
+                  message.push(`Updated task: <b>${task.content}</b>, in ${task["todo-list-name"]} list, in ${task["project-name"]} project.`);
                 }
 
                 // Check if a signal is already set up
@@ -268,11 +268,11 @@ class Teamwork extends q.DesktopApp {
                 if( milestone["last-changed-on"] == milestone["created-on"] ){
                   logger.info("Created milestone");
                   // Created milestone
-                  message.push(`New milestone: ${milestone.title} in ${milestone["project-name"]} project.`);
+                  message.push(`New milestone: <b>${milestone.title}</b>, in ${milestone["project-name"]} project.`);
                 }else{
                   logger.info("Updated milestone");
                   // Updated milestone
-                  message.push(`Update in ${milestone.title} milestone in ${milestone["project-name"]} project.`);
+                  message.push(`Updated milestone: <b>${milestone.title}</b>, in ${milestone["project-name"]} project.`);
                 }
 
                 // Check if a signal is already set up
@@ -323,11 +323,11 @@ class Teamwork extends q.DesktopApp {
                 if( comment["last-changed-on"] == comment.datetime ){
                   logger.info("Created comment");
                   // Created comment
-                  message.push(`New comment in ${comment["project-name"]} project.`);
+                  message.push(`New <b>comment</b> in ${comment["project-name"]} project.`);
                 }else{
                   logger.info("Updated comment");
                   // Updated milestone
-                  message.push(`Update in a comment in ${comment["project-name"]} project.`);
+                  message.push(`Updated <b>comment</b> in ${comment["project-name"]} project.`);
                 }
 
                 // Check if a signal is already set up
@@ -382,11 +382,11 @@ class Teamwork extends q.DesktopApp {
                   if( notebook["updated-date"] == notebook["created-date"] ){
                     logger.info("Created notebook");
                     // Created notebook
-                    message.push(`New notebook: ${notebook.name} in ${project.name} project.`);
+                    message.push(`New notebook: <b>${notebook.name}</b>, in ${project.name} project.`);
                   }else{
                     logger.info("Updated notebook");
                     // Updated notebook
-                    message.push(`Update in ${notebook.name} notebook in ${project.name} project.`);
+                    message.push(`Updated notebook: <b>${notebook.name}</b>, in ${project.name} project.`);
                   }
 
                   // Check if a signal is already set up
