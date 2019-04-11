@@ -77,11 +77,18 @@
         "controlType": "checkbox"
       },
       {
+        "key": "milestones",
+        "label": "Milestones",
+        "order": 4,
+        "required": false,
+        "controlType": "checkbox"
+      },
+      {
         "key": "color",
         "label": "Select a color",
         "help": "",
         "required": true,
-        "order": 4,
+        "order": 5,
         "controlType": "color",
         "value": "#ff0000"
       },
@@ -90,7 +97,7 @@
         "label": "Select a notification effect",
         "help": "",
         "required": true,
-        "order": 5,
+        "order": 6,
         "controlType": "effect",
         "value": "BLINK"
       }
