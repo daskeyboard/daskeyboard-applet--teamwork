@@ -32,8 +32,8 @@ class Teamwork extends q.DesktopApp {
 
   constructor() {
     super();
-    // run every 30 sec
-    this.pollingInterval = 30 * 1000;
+    // run every 20 sec
+    this.pollingInterval = 20 * 1000;
   }
 
   async applyConfig() {
@@ -61,83 +61,160 @@ class Teamwork extends q.DesktopApp {
     let triggered = false;
     let message = [];
     let url;
-
+    var isBodyEmpty;
+    let body;
     logger.info("Teamwork running.");
 
-    try {
-      const body = await request.get({
-        url: `${this.baseUrl}/projects.json`,
-        headers: this.serviceHeaders,
-        json: true
-      });
+    // Check if the user add a specific configuration
+    // In others words, check if every checkbox are false
+    if(!(this.config["posts"])){
 
-      // Test if there is something inside the response
-      var isBodyEmpty = isEmpty(body) || (body === "[]");
-      if (isBodyEmpty) {
-        logger.info("Response empty when getting all issues.");
-      }
-      else {
+      // Default configuration.
+      // Send message whenever all projects get an update
 
-        logger.info("This is how the projects look: " + JSON.stringify(body) );
+      logger.info("Wanted default configuration. All projects updates.");
+      
+      try{
+        body = await request.get({
+          url: `${this.baseUrl}/projects.json`,
+          headers: this.serviceHeaders,
+          json: true
+        });
+        // Test if there is something inside the response
+        isBodyEmpty = isEmpty(body.projects) || (body.projects === "[]");
+        if (isBodyEmpty) {
+          logger.info("Response empty when getting all projects.");
+        }
+        else {
 
-        // Extract the issues from the response
-        for (let project of body.projects) {
-          // If there is an update on a project.
-          if( (project.last-change-on > this.now) ){
+          // Extract the issues from the response
+          for (let project of body.projects) {
 
-            // Update signal's message
-            if(project.last-changed-on==project.created-on){
-              logger.info("CREATED PROJECT");
-              // Created project
-              message.push(`New project: ${project.name}.`);
-            }else{
-              logger.info("UPDATED PROJECT");
-              // Updated project
-              message.push(`Update in ${project.name} project.`);
+            // logger.info("This is a last changed on project:"+project["last-changed-on"]);
+            // logger.info("This NOW:"+this.now);
+
+            // If there is an update on a project.
+            if( project["last-changed-on"] > this.now ){
+
+              // Update signal's message
+              if(project["last-changed-on"] == project["created-on"]){
+                logger.info("Created project");
+                // Created project
+                message.push(`New project: ${project.name}.`);
+              }else{
+                logger.info("Updated project");
+                // Updated project
+                message.push(`Update in ${project.name} project.`);
+              }
+
+              // Check if a signal is already set up
+              // in order to change the url
+              if(triggered){
+                url = `https://${this.subdomain}.teamwork.com/#/projects/list/active`;
+              }else{
+                url = `https://${this.subdomain}.teamwork.com/#/projects/${project.id}/overview/summary`;
+              }
+
+              // Need to send a signal
+              triggered = true;
             }
-
-            // Check if a signal is already set up
-            // in order to change the url
-            if(triggered){
-              url = `https://${this.subdomain}.teamwork.com/#/projects/list/active`;
-            }else{
-              url = `https://${this.subdomain}.teamwork.com/#/projects/${project.id}/overview/summary`;
-            }
-
-            // Need to send a signal
-            triggered = true;
           }
         }
+      } catch(error){
+        logger.info("There has been an error:"+error);
+      };
 
-        // If we need to send a signal with one or several updates.
-        if(triggered){
+    }else{
 
-          // Updated time
-          this.now = getUtcTime();
+      // There is a needed configuration
 
-          // Create signal
-          signal = new q.Signal({
-            points: [[new q.Point(this.config.color, this.config.effect)]],
-            name: "Teamwork",
-            message: message.join("<br>"),
-            link: {
-              url: url,
-              label: 'Show in Teamwork',
-            }
+      if(this.config["posts"]){
+
+        logger.info("Wanted posts configuration");
+
+        try{
+          body = await request.get({
+            url: `${this.baseUrl}/posts.json`,
+            headers: this.serviceHeaders,
+            json: true
           });
+          // Test if there is something inside the response
+          isBodyEmpty = isEmpty(body.posts) || (body.posts === "[]");
+          if (isBodyEmpty) {
+            logger.info("Response empty when getting all posts.");
+          }
+          else {
 
+            // Extract the posts from the response
+            for (let post of body.posts) {
+              // If there is an update on a post.
+              if( post["last-changed-on"] > this.now ){
+
+                // Update signal's message
+                if( post["last-changed-on"] == post["created-on"] ){
+                  logger.info("Created post");
+                  // Created project
+                  message.push(`New post: ${post.title}.`);
+                }else{
+                  logger.info("Updated post");
+                  // Updated project
+                  message.push(`Update in ${post.title} post in ${post["project-name"]} project.`);
+                }
+
+                // Check if a signal is already set up
+                // in order to change the url
+                if(triggered){
+                  url = `https://${this.subdomain}.teamwork.com/#/projects/list/active`;
+                }else{
+                  url = `https://${this.subdomain}.teamwork.com/#/messages/${post.id}`;
+                }
+
+                // Need to send a signal
+                triggered = true;
+              }
+            }
+          }
+        } catch(error){
+          logger.info("There has been an error:"+error);
+        };
+
+    }
+
+
+    }
+
+
+    // If we need to send a signal with one or several updates.
+    if(triggered){
+
+      // Updated time
+      this.now = getUtcTime();
+
+      // Create signal
+      signal = new q.Signal({
+        points: [[new q.Point(this.config.color, this.config.effect)]],
+        name: "Teamwork",
+        message: message.join("<br>"),
+        link: {
+          url: url,
+          label: 'Show in Teamwork',
         }
+      });
 
-        return signal;
-      }
     }
-    catch (error) {
-      logger.error(`Got error sending request to service: ${JSON.stringify(error)}`);
-      return q.Signal.error([
-        'The Teamwork service returned an error. Please check your API key and account.',
-        `Detail: ${error.message}`
-      ]);
-    }
+
+    return signal;
+
+    // try {
+      
+    // }
+    // catch (error) {
+    //   logger.error(`Got error sending request to service: ${JSON.stringify(error)}`);
+    //   return q.Signal.error([
+    //     'The Teamwork service returned an error. Please check your API key and account.',
+    //     `Detail: ${error.message}`
+    //   ]);
+    // }
 
   }
 
