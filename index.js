@@ -67,7 +67,7 @@ class Teamwork extends q.DesktopApp {
 
     // Check if the user add a specific configuration
     // In others words, check if every checkbox are false
-    if(!(this.config["posts"]||this.config["tasks"])){
+    if(!(this.config["posts"]||this.config["tasks"]||this.config["milestones"])){
 
       // Default configuration.
       // Send message whenever all projects get an update
@@ -121,7 +121,7 @@ class Teamwork extends q.DesktopApp {
           }
         }
       } catch(error){
-        logger.info("It has been an error in DEFAULT config: "+error);
+        logger.error("It has been an error in DEFAULT config: "+error);
         return q.Signal.error([
           'The Teamwork service returned an error. Please check your API key and account.',
           `Detail: ${error.message}`
@@ -179,7 +179,7 @@ class Teamwork extends q.DesktopApp {
             }
           }
         } catch(error){
-          logger.info("It has been an error in POST config: "+error);
+          logger.error("It has been an error in POST config: "+error);
           return q.Signal.error([
             'The Teamwork service returned an error. Please check your API key and account.',
             `Detail: ${error.message}`
@@ -200,7 +200,7 @@ class Teamwork extends q.DesktopApp {
           // Test if there is something inside the response
           isBodyEmpty = isEmpty(body["todo-items"]) || (body["todo-items"] === "[]");
           if (isBodyEmpty) {
-            logger.info("Response empty when getting all tasks.");
+            logger.error("Response empty when getting all tasks.");
           }
           else {
 
@@ -234,7 +234,62 @@ class Teamwork extends q.DesktopApp {
             }
           }
         } catch(error){
-          logger.info("It has been an error in TASKS config: "+error);
+          logger.error("It has been an error in TASKS config: "+error);
+          return q.Signal.error([
+            'The Teamwork service returned an error. Please check your API key and account.',
+            `Detail: ${error.message}`
+          ]);
+        };
+      }
+
+      if(this.config["milestones"]){
+
+        logger.info("Wanted milestones configuration");
+
+        try{
+          body = await request.get({
+            url: `${this.baseUrl}/milestones.json`,
+            headers: this.serviceHeaders,
+            json: true
+          });
+          // Test if there is something inside the response
+          isBodyEmpty = isEmpty(body.milestones) || (body.milestones === "[]");
+          if (isBodyEmpty) {
+            logger.info("Response empty when getting all milestones.");
+          }
+          else {
+
+            // Extract the milestones from the response
+            for (let milestone of body.milestones) {
+              // If there is an update on a milestone.
+              if( milestone["last-changed-on"] > this.now ){
+
+                // Update signal's message
+                if( milestone["last-changed-on"] == milestone["created-on"] ){
+                  logger.info("Created milestone");
+                  // Created milestone
+                  message.push(`New milestone: ${milestone.title} in ${milestone["project-name"]} project.`);
+                }else{
+                  logger.info("Updated milestone");
+                  // Updated milestone
+                  message.push(`Update in ${milestone.title} milestone in ${milestone["project-name"]} project.`);
+                }
+
+                // Check if a signal is already set up
+                // in order to change the url
+                if(triggered){
+                  url = `https://${this.subdomain}.teamwork.com/#/projects/list/active`;
+                }else{
+                  url = `https://${this.subdomain}.teamwork.com/#/milestones/${milestone.id}`;
+                }
+
+                // Need to send a signal
+                triggered = true;
+              }
+            }
+          }
+        } catch(error){
+          logger.error("It has been an error in MILESTONES config: "+error);
           return q.Signal.error([
             'The Teamwork service returned an error. Please check your API key and account.',
             `Detail: ${error.message}`
