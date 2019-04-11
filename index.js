@@ -67,7 +67,7 @@ class Teamwork extends q.DesktopApp {
 
     // Check if the user add a specific configuration
     // In others words, check if every checkbox are false
-    if(!(this.config["posts"]||this.config["tasks"]||this.config["milestones"]||this.config["comments"])){
+    if(!(this.config["posts"]||this.config["tasks"]||this.config["milestones"]||this.config["comments"]||this.config["notebooks"])){
 
       // Default configuration.
       // Send message whenever all projects get an update
@@ -297,7 +297,6 @@ class Teamwork extends q.DesktopApp {
         };
       }
 
-
       if(this.config["comments"]){
 
         logger.info("Wanted comments configuration");
@@ -346,6 +345,66 @@ class Teamwork extends q.DesktopApp {
           }
         } catch(error){
           logger.error("It has been an error in COMMENTS config: "+error);
+          return q.Signal.error([
+            'The Teamwork service returned an error. Please check your API key and account.',
+            `Detail: ${error.message}`
+          ]);
+        };
+      }
+
+      if(this.config["notebooks"]){
+
+        logger.info("Wanted notebooks configuration");
+
+        try{
+          body = await request.get({
+            url: `${this.baseUrl}/notebooks.json`,
+            headers: this.serviceHeaders,
+            json: true
+          });
+          // Test if there is something inside the response
+          isBodyEmpty = isEmpty(body.projects) || (body.projects === "[]");
+          if (isBodyEmpty) {
+            logger.info("Response empty when getting all notebooks.");
+          }
+          else {
+
+            // Extract the project from the response
+            for (let project of body.projects) {
+
+              // Extract the notebooks from the project
+              for (let notebook of project.notebooks) {
+
+                // If there is an update on a notebook.
+                if( notebook["updated-date"] > this.now ){
+
+                  // Update signal's message
+                  if( notebook["updated-date"] == notebook["created-date"] ){
+                    logger.info("Created notebook");
+                    // Created notebook
+                    message.push(`New notebook: ${notebook.name} in ${project.name} project.`);
+                  }else{
+                    logger.info("Updated notebook");
+                    // Updated milestone
+                    message.push(`Update in ${notebook.name} notebook in ${project.name} project.`);
+                  }
+
+                  // Check if a signal is already set up
+                  // in order to change the url
+                  if(triggered){
+                    url = `https://${this.subdomain}.teamwork.com/#/projects/list/active`;
+                  }else{
+                    url = `https://${this.subdomain}.teamwork.com/#/notebooks/${notebook.id}`;
+                  }
+
+                  // Need to send a signal
+                  triggered = true;
+                }
+              }
+            }
+          }
+        } catch(error){
+          logger.error("It has been an error in NOTEBOOKS config: "+error);
           return q.Signal.error([
             'The Teamwork service returned an error. Please check your API key and account.',
             `Detail: ${error.message}`
