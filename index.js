@@ -72,7 +72,7 @@ class Teamwork extends q.DesktopApp {
       // Default configuration.
       // Send message whenever all projects get an update
 
-      logger.info("Wanted default configuration. All projects updates.");
+      logger.info("Default configuration. All updates from all projects.");
 
       try{
         body = await request.get({
@@ -122,8 +122,13 @@ class Teamwork extends q.DesktopApp {
         }
       } catch(error){
         logger.error("It has been an error in DEFAULT config: "+error);
+        if(`${error.message}`.includes("getaddrinfo")){
+          return q.Signal.error(
+            'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+          );
+        }
         return q.Signal.error([
-          'The Teamwork service returned an error. Please check your API key and account.',
+          'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
           `Detail: ${error.message}`
         ]);
       };
@@ -134,7 +139,7 @@ class Teamwork extends q.DesktopApp {
 
       if(this.config["posts"]){
 
-        logger.info("Wanted posts configuration");
+        logger.info("Posts configuration.");
 
         try{
           body = await request.get({
@@ -180,8 +185,13 @@ class Teamwork extends q.DesktopApp {
           }
         } catch(error){
           logger.error("It has been an error in POST config: "+error);
+          if(`${error.message}`.includes("getaddrinfo")){
+            return q.Signal.error(
+              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            );
+          }
           return q.Signal.error([
-            'The Teamwork service returned an error. Please check your API key and account.',
+            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
             `Detail: ${error.message}`
           ]);
         };
@@ -189,7 +199,7 @@ class Teamwork extends q.DesktopApp {
 
       if(this.config["tasks"]){
 
-        logger.info("Wanted tasks configuration");
+        logger.info("Tasks configuration");
 
         try{
           body = await request.get({
@@ -235,8 +245,13 @@ class Teamwork extends q.DesktopApp {
           }
         } catch(error){
           logger.error("It has been an error in TASKS config: "+error);
+          if(`${error.message}`.includes("getaddrinfo")){
+            return q.Signal.error(
+              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            );
+          }
           return q.Signal.error([
-            'The Teamwork service returned an error. Please check your API key and account.',
+            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
             `Detail: ${error.message}`
           ]);
         };
@@ -244,7 +259,7 @@ class Teamwork extends q.DesktopApp {
 
       if(this.config["milestones"]){
 
-        logger.info("Wanted milestones configuration");
+        logger.info("Milestones configuration");
 
         try{
           body = await request.get({
@@ -290,8 +305,13 @@ class Teamwork extends q.DesktopApp {
           }
         } catch(error){
           logger.error("It has been an error in MILESTONES config: "+error);
+          if(`${error.message}`.includes("getaddrinfo")){
+            return q.Signal.error(
+              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            );
+          }
           return q.Signal.error([
-            'The Teamwork service returned an error. Please check your API key and account.',
+            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
             `Detail: ${error.message}`
           ]);
         };
@@ -299,7 +319,7 @@ class Teamwork extends q.DesktopApp {
 
       if(this.config["comments"]){
 
-        logger.info("Wanted comments configuration");
+        logger.info("Comments configuration");
 
         try{
           body = await request.get({
@@ -345,8 +365,13 @@ class Teamwork extends q.DesktopApp {
           }
         } catch(error){
           logger.error("It has been an error in COMMENTS config: "+error);
+          if(`${error.message}`.includes("getaddrinfo")){
+            return q.Signal.error(
+              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            );
+          }
           return q.Signal.error([
-            'The Teamwork service returned an error. Please check your API key and account.',
+            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
             `Detail: ${error.message}`
           ]);
         };
@@ -354,7 +379,7 @@ class Teamwork extends q.DesktopApp {
 
       if(this.config["notebooks"]){
 
-        logger.info("Wanted notebooks configuration");
+        logger.info("Notebooks configuration");
 
         try{
           body = await request.get({
@@ -405,16 +430,19 @@ class Teamwork extends q.DesktopApp {
           }
         } catch(error){
           logger.error("It has been an error in NOTEBOOKS config: "+error);
+          if(`${error.message}`.includes("getaddrinfo")){
+            return q.Signal.error(
+              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            );
+          }
           return q.Signal.error([
-            'The Teamwork service returned an error. Please check your API key and account.',
+            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
             `Detail: ${error.message}`
           ]);
         };
       }
 
-
     }
-
 
     // If we need to send a signal with one or several updates.
     if(triggered){
