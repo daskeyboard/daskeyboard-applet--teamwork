@@ -23,7 +23,7 @@ This applet uses the API from [Teamwork](https://developer.teamwork.com/projects
 Requires a Das Keyboard Q series: www.daskeyboard.com and a Teamwork account.
 
 Installation, configuration and uninstallation of applets is done within
-the Q Desktop application (<https://www.daskeyboard.com/q)>
+the Q Desktop application (<https://www.daskeyboard.com/q>)
 
 ## Running tests
 
