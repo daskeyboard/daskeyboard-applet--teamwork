@@ -123,14 +123,16 @@ class Teamwork extends q.DesktopApp {
       } catch(error){
         logger.error("It has been an error in DEFAULT config: "+error);
         if(`${error.message}`.includes("getaddrinfo")){
-          return q.Signal.error(
-            'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
-          );
+          // Do not send signal
+          // return q.Signal.error(
+          //   'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+          // );
+        }else{
+          return q.Signal.error([
+            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
+            `Detail: ${error.message}`
+          ]);
         }
-        return q.Signal.error([
-          'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
-          `Detail: ${error.message}`
-        ]);
       };
 
     }else{
@@ -186,14 +188,16 @@ class Teamwork extends q.DesktopApp {
         } catch(error){
           logger.error("It has been an error in POST config: "+error);
           if(`${error.message}`.includes("getaddrinfo")){
-            return q.Signal.error(
-              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
-            );
+            // Do not send signal
+            // return q.Signal.error(
+            //   'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            // );
+          }else{
+            return q.Signal.error([
+              'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
+              `Detail: ${error.message}`
+            ]);
           }
-          return q.Signal.error([
-            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
-            `Detail: ${error.message}`
-          ]);
         };
       }
 
@@ -246,14 +250,16 @@ class Teamwork extends q.DesktopApp {
         } catch(error){
           logger.error("It has been an error in TASKS config: "+error);
           if(`${error.message}`.includes("getaddrinfo")){
-            return q.Signal.error(
-              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
-            );
+            // Do not send signal
+            // return q.Signal.error(
+            //   'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            // );
+          }else{
+            return q.Signal.error([
+              'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
+              `Detail: ${error.message}`
+            ]);
           }
-          return q.Signal.error([
-            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
-            `Detail: ${error.message}`
-          ]);
         };
       }
 
@@ -306,14 +312,16 @@ class Teamwork extends q.DesktopApp {
         } catch(error){
           logger.error("It has been an error in MILESTONES config: "+error);
           if(`${error.message}`.includes("getaddrinfo")){
-            return q.Signal.error(
-              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
-            );
+            // Do not send signal
+            // return q.Signal.error(
+            //   'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            // );
+          }else{
+            return q.Signal.error([
+              'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
+              `Detail: ${error.message}`
+            ]);
           }
-          return q.Signal.error([
-            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
-            `Detail: ${error.message}`
-          ]);
         };
       }
 
@@ -366,14 +374,16 @@ class Teamwork extends q.DesktopApp {
         } catch(error){
           logger.error("It has been an error in COMMENTS config: "+error);
           if(`${error.message}`.includes("getaddrinfo")){
-            return q.Signal.error(
-              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
-            );
+            // Do not send signal
+            // return q.Signal.error(
+            //   'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            // );
+          }else{
+            return q.Signal.error([
+              'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
+              `Detail: ${error.message}`
+            ]);
           }
-          return q.Signal.error([
-            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
-            `Detail: ${error.message}`
-          ]);
         };
       }
 
@@ -431,14 +441,16 @@ class Teamwork extends q.DesktopApp {
         } catch(error){
           logger.error("It has been an error in NOTEBOOKS config: "+error);
           if(`${error.message}`.includes("getaddrinfo")){
-            return q.Signal.error(
-              'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
-            );
+            // Do not send signal
+            // return q.Signal.error(
+            //   'The Teamwork service returned an error. <b>Please check your internet connection</b>.'
+            // );
+          }else{
+            return q.Signal.error([
+              'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
+              `Detail: ${error.message}`
+            ]);
           }
-          return q.Signal.error([
-            'The Teamwork service returned an error. <b>Please check your API key and account</b>.',
-            `Detail: ${error.message}`
-          ]);
         };
       }
 
